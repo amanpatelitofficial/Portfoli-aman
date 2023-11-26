@@ -4,4 +4,4 @@ services:
   web:
     image: "amanpatelitprofessional/aman:latest"
     ports:
-      - "8000:8000"
+      - "8000:80"
