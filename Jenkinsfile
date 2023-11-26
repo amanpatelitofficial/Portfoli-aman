@@ -23,7 +23,7 @@ pipeline {
         }
         stage("Deploy"){
             steps{
-                echo "aman"
+                sh "docker-compose down -d && docker-compose up -d"
             }
         }
     }
