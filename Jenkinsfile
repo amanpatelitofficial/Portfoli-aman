@@ -4,7 +4,7 @@ pipeline {
     stages{
         stage("Code"){
             steps{
-                git url: "https://github.com/amanpatelitofficial/Portfoli-aman.git", branch: "jenkins"
+                git url: "https://github.com/amanpatelitofficial/Portfoli-aman.git", branch: "main"
             }
         }
         stage("Build & Test"){
