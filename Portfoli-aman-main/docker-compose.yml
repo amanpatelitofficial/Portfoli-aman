@@ -1,0 +1,7 @@
+version: '3.9'
+
+services:
+  web:
+    image: "amanpatelitprofessional/aman:latest"
+    ports:
+      - "8000:80"
