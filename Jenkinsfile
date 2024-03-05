@@ -53,7 +53,11 @@ pipeline{
             }
         }
         
-        
+       stage('Deploy to container'){
+            steps{
+                sh 'docker run -d --name demo-app -p 8080:80 amanpatelitprofessional/demo-app:latest'
+            }
+        } 
        
         
     }
