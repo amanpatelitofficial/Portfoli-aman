@@ -1,32 +1,65 @@
-pipeline {
+pipeline{
     agent any
-    tools{
-     dockerTool 'docker'
+    
+    
+     environment {
+    
+        imageName = 'amanpatelitprofessional/demo-app'
+        dockerHubCredentials = 'dockerhub'
+        DOCKER_IMAGE = 'amanpatelitprofessional/demo-app'
+        GIT_CREDENTIALS = credentials('githubkey')
+        MAX_IMAGES_TO_KEEP = 5
     }
-    stages{
-        stage("Code"){
-            steps{
-                git url: "https://github.com/amanpatelitofficial/Portfoli-aman.git", branch: "main"
-            }
-        }
-        stage("Build & Test"){
-            steps{
-                sh "docker build . -t aman"
-            }
-        }
-        stage("Push to DockerHub"){
-            steps{
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                    sh "docker tag aman ${env.dockerHubUser}/aman:latest"
-                    sh "docker push ${env.dockerHubUser}/aman:latest" 
+    
+      stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/master']],
+                        userRemoteConfigs: [[url: 'https://github.com/amanpatelitofficial/Portfoli-aman.git']],
+                        extensions: [[$class: 'CleanCheckout']],
+                        credentialsId: 'GIT_CREDENTIALS'
+                    ])
                 }
             }
         }
-        stage("Deploy"){
-            steps{
-                sh "docker-compose down && docker-compose up -d"
+
+    
+
+        
+        stage('Build & Test') {
+            steps {
+                script {
+                    
+                    def DOCKER_IMAGE = "${imageName}:${BUILD_NUMBER}"
+                    sh "docker build . -t ${DOCKER_IMAGE}"
+                
+                }
             }
         }
+        
+        
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                   withCredentials([usernamePassword(credentialsId:"dockerhub",passwordVariable:"dockerhubPass",usernameVariable:"dockerhubUser")]){
+                        def DOCKER_IMAGE = "${imageName}:${BUILD_NUMBER}"
+                        sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPass}"
+                        sh "docker push ${DOCKER_IMAGE}"
+                    }
+                }
+            }
+        }
+        
+        
+       
+        
     }
 }
+
+    
+
+   
+
