@@ -25,6 +25,7 @@ jobs:
       # Step 3: Sync HTML/CSS files to S3
       - name: Deploy to S3
         run: |
-          aws s3 sync ./ s3://your-s3-bucket-name \
+          aws s3 sync ./ s3://amansdlc.com \
             --delete \
             --exact-timestamps
+
